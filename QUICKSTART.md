@@ -1,1 +1,147 @@
-# Quick Start Guide\n\n## 5-Minute Setup\n\n### 1. Prerequisites\n```bash\n# Check Python version (3.13+ required)\npython --version\n\n# Verify Git\ngit --version\n```\n\n### 2. Clone & Environment\n```bash\n# Create virtual environment\npython -m venv venv\nvenv\\Scripts\\activate  # Windows\nsource venv/bin/activate  # macOS/Linux\n\n# Install dependencies\npip install -r requirements.txt\n```\n\n### 3. Configure Credentials\n```bash\n# Copy config template\ncopy .env.example .env\n\n# Edit .env and add your Azure OpenAI credentials:\n# AZURE_OPENAI_ENDPOINT=your_endpoint_url\n# MODEL_DEPLOYMENT=gpt-4.1\n```\n\n### 4. Run Application\n```bash\npython tools-app.py\n```\n\n### 5. Test It\n```\nEnter a question: What's happening in San Francisco next month?\n(Uses web_search to find current SF events)\n\nEnter a question: What hotels does Margie's Travel offer?\n(Uses file_search to find hotels in brochures)\n\nEnter a question: quit\n```\n\n---\n\n## Azure Setup\n\n### Login to Azure\n```bash\naz login\n```\n\n### Get Your Credentials\n1. Go to [Azure Portal](https://portal.azure.com)\n2. Search for \"Azure OpenAI Service\"\n3. Find your service instance\n4. Copy endpoint URL from \"Keys and Endpoints\"\n5. Copy model deployment name\n\n### Update .env\n```env\nAZURE_OPENAI_ENDPOINT=https://your-service.openai.azure.com/openai/v1\nMODEL_DEPLOYMENT=gpt-4.1\n```\n\n---\n\n## Key Features\n\n✅ **RAG System** - Retrieval Augmented Generation  \n✅ **Vector Store** - Semantic search on PDFs  \n✅ **file_search Tool** - Query your documents  \n✅ **web_search Tool** - Access current information  \n✅ **Tool Autonomy** - Model chooses tools automatically  \n✅ **Streaming** - Real-time response display  \n✅ **Context Memory** - Conversation tracking  \n\n---\n\n## How It Works\n\n### Query Analysis\nModel analyzes your question and decides:\n- Need current info? → Use web_search\n- Need company data? → Use file_search\n- Need both? → Use both tools\n\n### Tool Execution\n```\nweb_search → Search internet → Return results\nfile_search → Search PDFs → Return relevant chunks\n```\n\n### Response Generation\nModel combines results and generates grounded response with sources.\n\n---\n\n## Example Queries\n\n### Single Tool (file_search)\n```\n\"What hotels does Margie's Travel offer in London?\"\n→ Searches brochures → Returns hotel info\n```\n\n### Single Tool (web_search)\n```\n\"What's the current weather in New York?\"\n→ Searches internet → Returns weather data\n```\n\n### Both Tools (Intelligent combination)\n```\n\"Compare Margie's Dubai hotels with other options\"\n→ file_search (company hotels) + web_search (market)\n→ Comparative analysis\n```\n\n---\n\n## Adding Your Documents\n\n1. Add PDFs to `brochures/` folder\n2. Run `tools-app.py`\n3. Documents automatically indexed and searchable\n\nSupported formats:\n- PDF documents\n- Text documents\n- Web content\n\n---\n\n## Troubleshooting\n\n### \"Vector store not found\"\n- App creates automatically on first run\n- PDFs indexed automatically\n\n### \"Tool execution error\"\n- Verify brochures/ folder exists\n- Check internet connection for web_search\n\n### \"Azure credentials not found\"\n```bash\naz login\n# Select subscription when prompted\n```\n\n### \"ModuleNotFoundError\"\n```bash\nvenv\\Scripts\\activate  # Windows\npip install -r requirements.txt\n```\n\n---\n\n## Next Steps\n\n1. **Explore the code** - Every line is commented\n2. **Read ARCHITECTURE.md** - Technical details\n3. **Test tools** - Try single and combined queries\n4. **Add documents** - Put your PDFs in brochures/\n5. **Deploy** - See ARCHITECTURE for production setup\n\n---\n\n## File Structure\n\n```\n.\n├── tools-app.py                # Main application\n├── brochures/                  # PDF documents for search\n│   ├── Dubai Brochure.pdf\n│   ├── Las Vegas Brochure.pdf\n│   └── ...\n├── requirements.txt            # Python dependencies\n├── .env.example               # Configuration template\n├── .gitignore                 # Git ignore rules\n├── README.md                  # Full documentation\n├── ARCHITECTURE.md            # Design and patterns\n├── CONTRIBUTING.md            # Contribution guidelines\n├── LICENSE                    # MIT License\n└── .github/\n    ├── workflows/\n    │   └── lint.yml           # CI/CD pipeline\n    └── PULL_REQUEST_TEMPLATE.md\n```\n\n---\n\n## Documentation\n\n- **README.md** - Feature overview and setup\n- **ARCHITECTURE.md** - Technical deep dive\n- **Code comments** - Every function explained\n- **In-code docstrings** - Implementation details\n\n---\n\n## Use Cases\n\n- 📚 **Customer Support** - Search docs + help users\n- 🏥 **Medical Assistant** - Search journals + provide guidance\n- ⚖️ **Legal Research** - Search cases + analyze law\n- 📊 **Research Aid** - Search papers + summarize\n- 🏖️ **Travel Planning** - Search packages + find deals\n- 💼 **Corporate AI** - Search internal docs + policies\n\n---\n\n## Support\n\n📧 **Contact:** [contact@samabrains.com](mailto:contact@samabrains.com)  \n🌐 **Website:** [samabrains.com](https://samabrains.com)  \n📚 **Docs:** See README.md and ARCHITECTURE.md  \n\n---\n\n**Build intelligent AI applications with RAG!** 🚀\n"
+# Quick Start Guide
+
+## 1. Prerequisites
+
+```bash
+python --version
+git --version
+```
+
+This project is designed for Python 3.13 or later.
+
+## 2. Set Up the Environment
+
+```bash
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # macOS/Linux
+pip install -r requirements.txt
+```
+
+## 3. Configure Credentials
+
+```bash
+copy .env.example .env
+```
+
+On macOS/Linux:
+
+```bash
+cp .env.example .env
+```
+
+Update `.env`:
+
+```env
+AZURE_OPENAI_ENDPOINT=https://your-service.openai.azure.com/openai/v1
+MODEL_DEPLOYMENT=gpt-4.1
+```
+
+## 4. Sign In to Azure
+
+```bash
+az login
+```
+
+Select the subscription that contains your Azure OpenAI resource.
+
+## 5. Check the Brochures
+
+The app indexes PDFs from the `brochures/` folder. The sample project includes
+six travel brochures. You can keep them for testing or replace them with your
+own PDFs.
+
+## 6. Run the Application
+
+```bash
+python tools-app.py
+```
+
+## 7. Try Example Prompts
+
+```text
+What hotels does Margie's Travel offer in London?
+```
+
+```text
+What's happening in New York this month?
+```
+
+```text
+Compare Margie's Dubai hotels with other current hotel options.
+```
+
+Type `quit` to exit.
+
+## How It Works
+
+The app creates a vector store, uploads the PDFs from `brochures/`, and gives
+the model access to two tools:
+
+- `file_search` for brochure knowledge.
+- `web_search` for current public information.
+
+The model chooses tools based on the question, combines the results, streams the
+answer, and stores the response ID for follow-up context.
+
+## File Structure
+
+```text
+.
+|-- tools-app.py
+|-- brochures/
+|   |-- Dubai Brochure.pdf
+|   |-- Las Vegas Brochure.pdf
+|   |-- London Brochure.pdf
+|   |-- Margies Travel Company Info.pdf
+|   |-- New York Brochure.pdf
+|   `-- San Francisco Brochure.pdf
+|-- requirements.txt
+|-- .env.example
+|-- README.md
+|-- QUICKSTART.md
+|-- ARCHITECTURE.md
+|-- CONTRIBUTING.md
+|-- LICENSE
+`-- .github/
+    |-- workflows/
+    |   `-- lint.yml
+    `-- PULL_REQUEST_TEMPLATE.md
+```
+
+## Troubleshooting
+
+### No PDFs Found
+
+Make sure the `brochures/` folder exists and contains at least one PDF.
+
+### Azure Credentials Not Found
+
+```bash
+az login
+```
+
+### Missing Python Package
+
+```bash
+venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+```
+
+### Model Not Found
+
+Check that `MODEL_DEPLOYMENT` matches your Azure OpenAI deployment name exactly.
+
+### Tool Execution Error
+
+- Check your Azure OpenAI endpoint.
+- Confirm that the model deployment supports the tools used by this app.
+- Check your internet connection for web search.
+
+## Next Steps
+
+1. Read `ARCHITECTURE.md`.
+2. Add your own PDFs to `brochures/`.
+3. Try prompts that require only brochure search.
+4. Try prompts that require only web search.
+5. Try prompts that combine both tools.

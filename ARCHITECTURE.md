@@ -1,1 +1,138 @@
-# Architecture Overview\n\n## Tools-Augmented AI Architecture\n\n```\nUser Query\n    ↓\nAI Model Analysis\n    ├─ \"Need current information?\" → web_search\n    ├─ \"Need company data?\" → file_search  \n    ├─ \"Need both?\" → Sequential execution\n    └─ \"Use training data?\" → Direct response\n    ↓\nTool Execution (Parallel/Sequential)\n    ├─ file_search\n    │  ├─ Convert query to embedding\n    │  ├─ Search vector store\n    │  └─ Retrieve relevant chunks\n    └─ web_search\n       └─ Search internet\n    ↓\nResult Aggregation\n    ↓\nResponse Generation\n    ├─ Ground response in tool results\n    ├─ Stream chunks to client\n    └─ Save response ID for context\n    ↓\nUser Display\n```\n\n---\n\n## Vector Store & Semantic Search\n\n**Embeddings Pipeline:**\n```\nPDF Documents\n    ↓\nText Extraction & Chunking\n    ├─ Split by sections\n    ├─ Maintain context\n    └─ ~1000 chars per chunk\n    ↓\nEmbedding Generation\n    ├─ Convert text → vectors (1536 dimensions)\n    ├─ Semantic representation\n    └─ Cached for reuse\n    ↓\nVector Store (Database)\n    ├─ Index embeddings\n    ├─ Metadata association\n    └─ Similarity search capability\n    ↓\nQuery Processing\n    ├─ Convert query → embedding\n    ├─ Find similar vectors (cosine similarity)\n    ├─ Retrieve top-k chunks (k=3-5)\n    └─ Return with confidence scores\n```\n\n**Advantages over Keyword Search:**\n- Semantic understanding (meaning-based)\n- Synonym handling\n- Contextual relevance\n- Better recall for paraphrased queries\n\n---\n\n## Retrieval-Augmented Generation (RAG) Pattern\n\n```\nUser Question\n    ↓\n[Retrieval Phase]\n    ├─ Search vector store\n    ├─ Retrieve relevant documents\n    └─ Format as context\n    ↓\n[Augmentation Phase]\n    ├─ Combine query + retrieved context\n    ├─ Format prompt with sources\n    └─ Pass to model\n    ↓\n[Generation Phase]\n    ├─ Model uses:\n    │  ├─ Retrieved facts (grounded)\n    │  ├─ Training knowledge (general)\n    │  └─ User question (intent)\n    ├─ Generate response\n    └─ Cite sources\n    ↓\nGrounded Response with Sources\n```\n\n**Benefits:**\n- Reduces hallucinations\n- Cites sources (explainability)\n- Uses latest information\n- Combines private data + public knowledge\n\n---\n\n## Tool Integration Pattern\n\n**Implementation:**\n```python\ntools=[\n    {\n        \"type\": \"file_search\",\n        \"vector_store_ids\": [store_id]  # Specify sources\n    },\n    {\n        \"type\": \"web_search\"  # No configuration needed\n    }\n]\n```\n\n**Model Autonomy:**\n- Model decides which tools to use\n- Can use multiple tools sequentially\n- Can combine results intelligently\n- No explicit tool routing in code\n\n**Execution Flow:**\n1. Model evaluates query\n2. Selects appropriate tool(s)\n3. Tool executes and returns results\n4. Model processes results\n5. Generates final response\n\n---\n\n## Data Flow for Travel Assistant Example\n\n### Query 1: \"What's happening in SF next month?\"\n```\nQuery → Analysis\n        ↓ \"Current events = web_search\"\n        → web_search execution\n        ← Returns current SF events for June 2026\n        → Model generates response\n        ← \"SF Design Week, Warriors games, concerts...\"\n```\n\n### Query 2: \"What hotels does Margie's Travel offer?\"\n```\nQuery → Analysis\n        ↓ \"Company-specific = file_search\"\n        → file_search execution\n        ← Searches brochures → Finds \"Lombard Hotel, Wharf Hotel\"\n        → Model generates response\n        ← \"Margie's Travel offers...\"\n```\n\n### Query 3: \"Compare Margie's hotels with competition\"\n```\nQuery → Analysis\n        ↓ \"Need both company data + market info\"\n        ├─ file_search (Margie's hotels)\n        └─ web_search (SF hotel market)\n        → Model combines results\n        ← Comparative analysis with pricing, reviews, features\n```\n\n---\n\n## Technology Stack\n\n- **Language:** Python 3.13+\n- **SDK:** OpenAI Python SDK v2.33+\n- **Vector Store:** Azure OpenAI Vector Store API\n- **Embeddings:** Text-embedding-3-small (1536 dimensions)\n- **Authentication:** Azure Identity (token-based)\n- **Model:** Azure OpenAI GPT-4.1\n- **Infrastructure:** Microsoft Foundry / Azure AI Services\n\n---\n\n## Vector Store Lifecycle\n\n```\n1. Create\n   vector_store = client.vector_stores.create(name=\"...\")\n   \n2. Upload & Index\n   files = [open(f, \"rb\") for f in PDFs]\n   batch = client.vector_stores.file_batches.upload_and_poll(...)\n   \n3. Query\n   response = client.responses.create(\n       tools=[{\"type\": \"file_search\", \"vector_store_ids\": [...]}]\n   )\n   \n4. Results\n   Model receives top-k similar chunks\n   Uses in response generation\n```\n\n---\n\n## Performance Characteristics\n\n**file_search:**\n- Latency: ~50-200ms per query\n- Throughput: 1000+ concurrent queries/sec\n- Accuracy: 90%+ relevance for semantic queries\n- Cost: Per vector operation (minimal)\n\n**web_search:**\n- Latency: ~500-2000ms (includes network round-trip)\n- Freshness: Real-time (1-24 hours)\n- Reliability: Dependent on internet connectivity\n- Cost: Per API call\n\n---\n\n## Scalability Considerations\n\n**Document Management:**\n- Single vector store: 1M+ documents\n- Multiple stores: Unlimited (partition by domain)\n- Update frequency: Real-time or batch\n\n**Concurrent Users:**\n- Single model deployment: 100-1000 RPS\n- Multi-region: 10K+ RPS\n- Connection pooling: Automatic via SDK\n\n---\n\n## Use Cases Enabled by This Architecture\n\n1. **Customer Support**\n   - Search FAQs + policies (file_search)\n   - Check status (web_search)\n   - Combined intelligent responses\n\n2. **Research Assistant**\n   - Search papers (file_search)\n   - Current research (web_search)\n   - Synthesis and analysis\n\n3. **Financial Analysis**\n   - Internal data (file_search)\n   - Market data (web_search)\n   - Informed recommendations\n\n4. **Legal Research**\n   - Case law (file_search)\n   - Recent rulings (web_search)\n   - Comprehensive analysis\n\n5. **Travel Planning** (This Example)\n   - Company offers (file_search)\n   - Events/availability (web_search)\n   - Personalized recommendations\n
+# Architecture Overview
+
+This project demonstrates a tools-augmented Azure OpenAI assistant that uses
+local PDF knowledge and web search to answer travel questions.
+
+## High-Level Flow
+
+```text
+User Query
+    |
+Responses API Request
+    |
+Model Tool Selection
+    |-- file_search -> Travel brochure vector store
+    |-- web_search  -> Current public information
+    |
+Result Synthesis
+    |
+Streaming Response
+    |
+Response ID Saved for Conversation Context
+```
+
+## Application Flow
+
+1. The app loads `AZURE_OPENAI_ENDPOINT` and `MODEL_DEPLOYMENT` from `.env`.
+2. It authenticates with Azure through `DefaultAzureCredential`.
+3. It creates a vector store named `travel-brochures`.
+4. It uploads every PDF from the `brochures/` folder.
+5. It starts an interactive terminal chat loop.
+6. Each user question is sent to the Responses API with available tools.
+7. The model decides whether to call `file_search`, `web_search`, both, or
+   neither.
+8. The final answer streams back to the terminal.
+9. The completed response ID is stored for follow-up questions.
+
+## Retrieval-Augmented Generation Pattern
+
+```text
+PDF Brochures
+    |
+Upload and Index
+    |
+Vector Store
+    |
+User Question
+    |
+file_search Retrieves Relevant Chunks
+    |
+Model Uses Retrieved Context
+    |
+Grounded Response
+```
+
+The retrieval step allows the model to answer questions using the brochure
+content instead of relying only on training data.
+
+## Tool Selection Pattern
+
+The model receives this tool list:
+
+```python
+tools=[
+    {
+        "type": "file_search",
+        "vector_store_ids": [vector_store.id],
+    },
+    {
+        "type": "web_search",
+    },
+]
+```
+
+The application does not route questions manually. The model evaluates the user
+query and decides which tool or tools are useful.
+
+## Example Scenarios
+
+### Brochure Question
+
+```text
+What hotels does Margie's Travel offer in San Francisco?
+```
+
+The model can use `file_search` to retrieve relevant brochure content.
+
+### Current Information Question
+
+```text
+What events are happening in San Francisco next month?
+```
+
+The model can use `web_search` to gather current public information.
+
+### Combined Question
+
+```text
+Compare Margie's San Francisco hotels with other current options.
+```
+
+The model can combine `file_search` results with web information.
+
+## Technology Stack
+
+- **Language:** Python 3.13+
+- **SDK:** OpenAI Python SDK
+- **Authentication:** Azure Identity
+- **Primary API:** Responses API
+- **Knowledge storage:** OpenAI vector stores
+- **Tools:** `file_search` and `web_search`
+- **Infrastructure:** Azure OpenAI / Microsoft Foundry
+
+## Implemented Resilience
+
+- Environment variable validation.
+- Empty brochure folder check.
+- File handle cleanup after upload.
+- Azure credential cleanup.
+- Graceful terminal error output.
+
+## Production Considerations
+
+For production use, consider adding:
+
+- Persistent vector store reuse instead of creating a new store each run.
+- Structured logging.
+- Retry logic for upload, search, and model calls.
+- Rate limit handling.
+- Source citations in the terminal output.
+- Automated tests around configuration and document discovery.
+- A web UI or API layer.
+
+## Scalability Notes
+
+The current app is intentionally simple and local. It is best suited for
+learning, demos, and portfolio presentation. For multiple users, the chat loop
+could be moved into an async API service and the vector store lifecycle could
+be managed separately from runtime requests.

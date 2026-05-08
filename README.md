@@ -1,226 +1,230 @@
-# Azure AI Tools-Augmented Application
+# Azure AI Tools-Augmented Travel Assistant
 
-**SamaBrains Solution** | AI Engineering Project  
-*Building knowledge-grounded AI agents with retrieval-augmented generation (RAG)*
+**SamaBrains Solution** | AI Engineering Project
 
----
+Build a retrieval-augmented travel assistant with Azure OpenAI, Microsoft
+Foundry, the Responses API, vector stores, file search, web search, and
+streaming responses.
 
-## 📋 Project Overview
+## Project Overview
 
-Production-grade AI agent demonstrating **tool-augmented architectures** and **retrieval-augmented generation (RAG)**. The application autonomously selects tools based on query requirements, combining document knowledge with real-time information sources.
+This repository demonstrates a tools-augmented AI chat application. The app can
+answer travel questions by searching local PDF brochures and, when needed,
+using web search for current destination information.
 
-## What Makes This Different?
+## Why I Built This
 
-This app includes **tools** that give the AI access to:
-1. **file_search** - Search knowledge from uploaded PDF documents
-2. **web_search** - Search the internet for current information
+I built this project to practice and demonstrate how AI assistants can go
+beyond general model knowledge by using tools. The goal was to show how a model
+can combine private business documents with current web information to produce
+more useful, grounded responses.
 
-The AI **autonomously decides** which tool to use based on your question!
+This project highlights practical AI engineering patterns such as retrieval
+augmented generation, vector store indexing, tool selection, streaming output,
+Azure Identity authentication, and clear developer documentation.
 
-## What's Included
+## What Makes This Different
 
-### **tools-app.py** - Tools-Augmented Chat Application
-- Vector store with 6 travel brochures (PDF files)
-- file_search tool (semantic search on documents)
-- web_search tool (internet search)
-- Streaming responses
-- Conversation tracking
-- **Use case:** Knowledge-augmented AI assistants (customer support, research, Q&A)
+The assistant has access to two tools:
 
-### **Brochures Folder**
-Travel brochures that get indexed for searching:
-- Dubai Brochure.pdf
-- Las Vegas Brochure.pdf
-- London Brochure.pdf
-- Margie's Travel Company Info.pdf
-- New York Brochure.pdf
-- San Francisco Brochure.pdf
+- `file_search`: Searches uploaded travel brochure PDFs.
+- `web_search`: Searches the web for current travel and destination details.
+
+The model decides which tool to use based on the user's question. A question
+about Margie's Travel brochures can use `file_search`; a question about current
+events or travel advice can use `web_search`; broader comparison questions can
+use both.
+
+## Included Files
+
+| File or Folder | Purpose |
+| --- | --- |
+| `tools-app.py` | Main tools-augmented chat application |
+| `brochures/` | Travel PDFs indexed into a vector store |
+| `.env.example` | Environment variable template |
+| `requirements.txt` | Runtime Python dependencies |
+| `QUICKSTART.md` | Step-by-step setup guide |
+| `ARCHITECTURE.md` | Design and flow details |
+| `CONTRIBUTING.md` | Contribution guidelines |
+
+## Repository Details
+
+| Detail | Value |
+| --- | --- |
+| Repository | `rssebambulidde/foundry-tools-chat` |
+| Remote URL | `https://github.com/rssebambulidde/foundry-tools-chat.git` |
+| Current branch | `master` |
+| Project type | Python command-line RAG and tools demo |
+| Runtime | Python 3.13+ |
+| Authentication | Azure Identity token authentication |
+| Primary API | OpenAI Responses API through Azure OpenAI |
+| Knowledge source | Travel brochure PDFs in `brochures/` |
+| License | MIT |
+| CI workflow | GitHub Actions lint and formatting checks |
 
 ## Quick Start
 
-### 1. Setup
+### 1. Set Up Python
+
 ```bash
-# Create virtual environment
 python -m venv venv
 venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Configure
-```bash
-# Copy the template
-copy .env.example .env
+On macOS/Linux:
 
-# Edit .env and add your actual values:
-# - AZURE_OPENAI_ENDPOINT: Your Azure OpenAI service endpoint
-# - MODEL_DEPLOYMENT: Your model name (e.g., gpt-4.1)
+```bash
+source venv/bin/activate
 ```
 
-### 3. Run
+### 2. Configure Azure OpenAI
+
+```bash
+copy .env.example .env
+```
+
+On macOS/Linux:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env`:
+
+```env
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/openai/v1
+MODEL_DEPLOYMENT=gpt-4.1
+```
+
+### 3. Run the App
+
 ```bash
 python tools-app.py
 ```
 
-Then ask travel-related questions. Type `quit` to exit.
+Type a travel question in the terminal. Type `quit` to exit.
 
-## Real Examples
+## Example Questions
 
-### Query 1: Web Search (Current Information)
-```
-Enter a question: What's happening in San Francisco next month?
-
-Response: [Uses web_search tool to find current SF events for June 2026]
-Assistant: San Francisco has several exciting events next month:
-- SF Design Week (June 2-8)
-- Concert Series at The Fillmore
-- Warriors basketball games
-- Art exhibitions in SOMA
-[... and more current information]
+```text
+What hotels does Margie's Travel offer in San Francisco?
 ```
 
-### Query 2: File Search (Document Knowledge)
-```
-Enter a question: What hotels does Margie's Travel offer in San Francisco?
+Uses `file_search` to search the brochure PDFs.
 
-Response: [Uses file_search tool to search brochures]
-Assistant: According to Margie's Travel brochures, they offer:
-- The Lombard Hotel
-- The Wharf Hotel
-[... sourced from uploaded PDFs]
+```text
+What's happening in San Francisco next month?
 ```
 
-### Query 3: Mixed Tools
-```
-Enter a question: Compare Margie's hotels with other SF options
+Uses `web_search` to retrieve current information.
 
-Response: [Uses BOTH file_search (company data) AND web_search (market rates)]
-Assistant: Margie's Travel offers...
-Other highly-rated hotels in SF include...
-Price comparison...
+```text
+Compare Margie's San Francisco hotels with other current options.
 ```
+
+Can combine brochure knowledge with current web information.
 
 ## Key Features
 
-✅ **Vector Store** - Semantic search on documents (meaning-based, not keyword matching)  
-✅ **file_search Tool** - Ask questions about your documents  
-✅ **web_search Tool** - Access current information from internet  
-✅ **Tool Autonomy** - Model chooses which tool(s) to use automatically  
-✅ **RAG System** - Combines document knowledge with web knowledge  
-✅ **Streaming** - Real-time response display  
-✅ **Conversation Memory** - Context maintained across turns  
+- Vector store indexing for PDF brochures.
+- `file_search` for semantic document search.
+- `web_search` for current destination information.
+- Model-directed tool selection.
+- Streaming terminal output.
+- Conversation memory through `previous_response_id`.
+- Azure Identity authentication with no hardcoded API keys.
 
 ## Architecture
 
-```
+```text
 User Question
-    ↓
-AI Analysis: "What tools do I need?"
-    ├─ Need current info? → web_search
-    ├─ Need company data? → file_search
-    ├─ Need both? → Both tools
-    └─ Need neither? → Use training data
-    ↓
-Execute Selected Tools
-    ├─ file_search: Query vector store
-    └─ web_search: Search internet
-    ↓
-Combine Results
-    ↓
-Generate Response with Streaming
-    ↓
-Display to User + Save Response ID for context
+    |
+Responses API Request
+    |
+Model Chooses Tools
+    |-- file_search -> Search brochure vector store
+    |-- web_search  -> Search current web information
+    |
+Model Combines Results
+    |
+Streaming Response
+    |
+Save Response ID for Follow-Up Questions
 ```
 
-## How Tools Work
+## Requirements
 
-### Vector Store & Embeddings
-```
-PDFs → Split into chunks → Convert to vectors (embeddings) → Store in vector DB
-         ↓
-User Question → Convert to vector → Find similar chunks → Return to model
-```
+- Python 3.13 or later
+- Azure subscription
+- Azure OpenAI resource with a deployed model
+- Microsoft Foundry or Azure OpenAI access
+- PDF files in the `brochures/` folder
+- Python packages from `requirements.txt`
 
-### Tool Configuration
-```python
-tools=[
-    {
-        "type": "file_search",
-        "vector_store_ids": [vector_store.id]  # Which documents to search
-    },
-    {
-        "type": "web_search"  # No config needed
-    }
-]
-```
+## Brochure Dataset
 
-## Comparison with Basic Chat Apps
+The included sample dataset contains travel brochures for:
+
+- Dubai
+- Las Vegas
+- London
+- Margie's Travel company information
+- New York
+- San Francisco
+
+You can replace these files with your own PDFs to adapt the assistant for a
+different domain.
+
+## Comparison With Basic Chat
 
 | Feature | Basic Chat | This App |
-|---------|-----------|----------|
-| Responses API | ✅ | ✅ |
-| Streaming | ✅ | ✅ |
-| Conversation Memory | ✅ | ✅ |
-| Non-blocking (async) | Only in chat-async.py | ❌ |
-| PDF Search | ❌ | ✅ |
-| Web Search | ❌ | ✅ |
-| AI Tool Selection | ❌ | ✅ |
-| RAG System | ❌ | ✅ |
-
-## Use Cases
-
-- 📚 **Customer Support** - Search FAQs + policies + web info
-- 🏥 **Medical Assistant** - Search medical journals + research
-- ⚖️ **Legal Assistant** - Search case law + web precedents
-- 📊 **Research Assistant** - Search papers + current articles
-- 🏖️ **Travel Planning** - Search brochures + current events/prices (like this app!)
-- 📱 **Product Support** - Search documentation + online resources
-
-## Adding Your Own Documents
-
-Replace the PDF files in the `brochures/` folder with your own documents:
-
-```python
-# The app automatically:
-# 1. Finds all PDFs in brochures/
-# 2. Creates embeddings
-# 3. Stores in vector store
-# 4. Makes searchable via file_search tool
-```
-
-## For Learning
-
-**New to tools/RAG?** This app demonstrates:
-- Vector stores and semantic search
-- Tool definition and specification
-- Tool autonomy (model chooses tools)
-- Multi-tool composition
-- RAG (Retrieval Augmented Generation) patterns
+| --- | --- | --- |
+| Responses API | Yes | Yes |
+| Streaming | Yes | Yes |
+| Conversation memory | Yes | Yes |
+| PDF search | No | Yes |
+| Web search | No | Yes |
+| Model tool selection | No | Yes |
+| RAG pattern | No | Yes |
 
 ## Troubleshooting
 
-**"Vector store not found"**
-- The app creates it automatically on first run
-- PDFs in brochures/ are indexed automatically
+### No PDFs Found
 
-**"Tool execution error"**
-- Check brochures folder exists and has PDFs
-- Verify internet connection for web_search
+Make sure the `brochures/` folder exists and contains PDF files.
 
-**"Azure credentials not found"**
-- Run `az login` to authenticate
+### Azure Credentials Not Found
+
+Run:
+
+```bash
+az login
+```
+
+### Model Not Found
+
+Check that `MODEL_DEPLOYMENT` in `.env` exactly matches your Azure OpenAI
+deployment name.
+
+### Tool Execution Error
+
+- Verify your Azure OpenAI endpoint and model deployment.
+- Confirm that your account can use file search and web search tools.
+- Check your internet connection for web search queries.
 
 ## Next Steps
 
-- Try adding different document types (add PDFs to brochures/)
-- Experiment with multi-turn conversations
-- Compare results with basic chat apps
-- Explore building custom tools for your domain
+- Add your own PDFs to `brochures/`.
+- Try single-tool and multi-tool prompts.
+- Compare responses with and without brochure grounding.
+- Adapt the app for customer support, internal docs, or research workflows.
 
 ## Resources
 
-- [Vector Stores & Embeddings](https://platform.openai.com/docs/api-reference/vector-stores)
-- [RAG Systems](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/retrieval-augmented-generation)
-- [OpenAI Tools](https://platform.openai.com/docs/guides/function-calling)
-- [Microsoft Foundry Agents](https://microsoft.com/foundry)
+- [OpenAI Python SDK](https://github.com/openai/openai-python)
+- [Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/ai-services/openai/)
+- [Retrieval-Augmented Generation][rag]
+- [Microsoft Foundry](https://microsoft.com/foundry)
+
+[rag]: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/retrieval-augmented-generation

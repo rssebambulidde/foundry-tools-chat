@@ -1,1 +1,34 @@
-## Description\nBriefly describe your changes\n\n## Type of Change\n- [ ] Bug fix\n- [ ] New feature\n- [ ] Breaking change\n- [ ] Documentation update\n\n## Related Issues\nCloses #(issue number)\n\n## Testing\nDescribe testing performed:\n- [ ] Local testing completed\n- [ ] Edge cases considered\n- [ ] Error handling verified\n\n## Checklist\n- [ ] Code follows style guidelines\n- [ ] Type hints added\n- [ ] Docstrings updated\n- [ ] No new warnings generated\n- [ ] No hardcoded secrets/credentials\n- [ ] Backward compatibility maintained\n\n## Screenshots/Logs (if applicable)\nAdd any relevant output\n"
+## Description
+
+Briefly describe your changes.
+
+## Type of Change
+
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Related Issues
+
+Closes #(issue number)
+
+## Testing
+
+Describe testing performed:
+
+- [ ] Local testing completed
+- [ ] Edge cases considered
+- [ ] Error handling verified
+
+## Checklist
+
+- [ ] Code follows style guidelines
+- [ ] Documentation updated where needed
+- [ ] No new warnings generated
+- [ ] No hardcoded secrets or credentials
+- [ ] Backward compatibility maintained
+
+## Screenshots/Logs (if applicable)
+
+Add any relevant output.

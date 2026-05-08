@@ -1,1 +1,93 @@
-# Contributing to SamaBrains AI Projects\n\nThank you for your interest in contributing to our AI engineering projects!\n\n## Code Standards\n\n### Python Style\n- Follow PEP 8\n- Use type hints for function signatures\n- Keep functions focused and testable\n- Add docstrings to all public functions\n\n### Commenting\n- Comment \"why\", not \"what\"\n- Explain complex logic\n- Document assumptions and limitations\n- Include example usage for utilities\n\n### Testing\n- Write tests for new features\n- Test both happy path and error cases\n- Maintain >80% code coverage\n- Use descriptive test names\n\n## Development Setup\n\n```bash\n# Clone and setup\ngit clone <repository>\ncd <project>\n\n# Virtual environment\npython -m venv venv\nvenv\\Scripts\\activate  # Windows\nsource venv/bin/activate  # macOS/Linux\n\n# Install dependencies with dev extras\npip install -r requirements.txt\n```\n\n## Making Changes\n\n1. **Create a branch:**\n   ```bash\n   git checkout -b feature/description\n   ```\n\n2. **Make changes:**\n   - Keep commits atomic and focused\n   - Write descriptive commit messages\n   - Test locally before pushing\n\n3. **Submit for review:**\n   - Push your branch\n   - Create a pull request\n   - Reference any related issues\n\n## Commit Message Format\n\n```\ntype(scope): brief description\n\nOptional detailed explanation of changes.\n- Point 1\n- Point 2\n\nFixes #123\n```\n\n**Types:**\n- `feat:` New feature\n- `fix:` Bug fix\n- `docs:` Documentation\n- `refactor:` Code restructuring\n- `test:` Test additions/updates\n- `perf:` Performance improvements\n\n## Code Review Checklist\n\n- [ ] Code follows PEP 8 style guide\n- [ ] Type hints are present\n- [ ] Docstrings are complete\n- [ ] Tests pass locally\n- [ ] No unnecessary dependencies added\n- [ ] Error handling is appropriate\n- [ ] Comments explain the why\n- [ ] No hardcoded secrets or credentials\n\n## Reporting Issues\n\nWhen reporting bugs, include:\n- Python version\n- Operating system\n- Steps to reproduce\n- Expected vs actual behavior\n- Relevant logs or error messages\n\n## License\n\nBy contributing, you agree your code is licensed under MIT.\n\n---\n\n**Questions?** Contact us at [contact@samabrains.com](mailto:contact@samabrains.com)\n"
+# Contributing Guide
+
+Thank you for your interest in contributing to SamaBrains AI projects.
+
+## Code Standards
+
+### Python Style
+
+- Follow PEP 8.
+- Use type hints for function signatures.
+- Keep functions focused and testable.
+- Add docstrings when they provide useful context.
+
+### Comments
+
+- Comment why something is done, not what each line does.
+- Explain important assumptions and limitations.
+- Keep comments short and useful.
+
+### Testing
+
+- Test new behavior when practical.
+- Cover important happy paths and error cases.
+- Use descriptive test names.
+
+## Development Setup
+
+```bash
+git clone <repository>
+cd <project>
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # macOS/Linux
+pip install -r requirements.txt
+```
+
+## Making Changes
+
+1. Create a branch:
+
+   ```bash
+   git checkout -b feature/description
+   ```
+
+2. Make focused changes and test them locally.
+
+3. Open a pull request with a clear summary and testing notes.
+
+## Commit Message Format
+
+```text
+type(scope): brief description
+
+Optional details about the change.
+```
+
+Common types:
+
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation change
+- `refactor`: Code restructuring
+- `test`: Test additions or updates
+- `perf`: Performance improvement
+
+## Code Review Checklist
+
+- [ ] Code follows the project style.
+- [ ] Documentation is updated where needed.
+- [ ] Tests or manual verification were completed.
+- [ ] No unnecessary dependencies were added.
+- [ ] Error handling is appropriate.
+- [ ] No hardcoded secrets or credentials were introduced.
+
+## Reporting Issues
+
+When reporting bugs, include:
+
+- Python version
+- Operating system
+- Steps to reproduce
+- Expected behavior
+- Actual behavior
+- Relevant logs or error messages
+
+## License
+
+By contributing, you agree that your contributions are licensed under the MIT
+License.
+
+## Questions
+
+Contact [contact@samabrains.com](mailto:contact@samabrains.com).
