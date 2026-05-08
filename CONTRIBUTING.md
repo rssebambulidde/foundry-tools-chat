@@ -90,4 +90,4 @@ License.
 
 ## Questions
 
-Contact [contact@samabrains.com](mailto:contact@samabrains.com).
+Contact [info@samabrains.com](mailto:contact@samabrains.com).
