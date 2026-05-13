@@ -224,7 +224,6 @@ deployment name.
 
 - [OpenAI Python SDK](https://github.com/openai/openai-python)
 - [Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/ai-services/openai/)
-- [Retrieval-Augmented Generation][rag]
-- [Microsoft Foundry](https://microsoft.com/foundry)
+  
 
 [rag]: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/retrieval-augmented-generation
